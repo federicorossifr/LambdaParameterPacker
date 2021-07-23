@@ -1,8 +1,8 @@
 #include "param_pack.h"
+#include "param_tuple_pack.h"
 
-
-
-using Funct = std::function<std::any(ParamPacker::ParamPack params)>;
+using namespace ParamTuplePacker;
+using Funct = std::function<std::any(ParamPack params)>;
 
 typedef struct {
     std::unordered_map<std::string,Funct> _map;
@@ -16,7 +16,7 @@ void reg_fun(std::string key, Funct f) {
 
 template <typename ...Ts>
 std::any call(std::string name,Ts&&... pack) {
-    ParamPacker::ParamPack params = ParamPacker::packParams(pack...);
+    ParamPack params = packParams(pack...);
     return map._map[name](params);
 }
 
@@ -27,19 +27,17 @@ struct complexType {
 
 // Test main
 int main() {
-    reg_fun("print_in",[](ParamPacker::ParamPack params) -> bool {
-        #pragma pack(push, 1)
+    reg_fun("print_in",[](ParamPack params) -> bool {
         struct {complexType* t;} args; 
-        #pragma pack(pop)
-        ParamPacker::unpackParams(params,&args);
+        unpackParams(params,&args);
         std::cout << args.t->a << ") In " << args.t->b << std::endl; return true;
     });
 
-    reg_fun("sum",[](ParamPacker::ParamPack params) -> double {
+    reg_fun("sum",[](ParamPack params) -> double {
         #pragma pack(push, 1)
         struct {int a; int b;} args; 
         #pragma pack(pop)
-        ParamPacker::unpackParams(params,&args);
+        unpackParams(params,&args);
         return (double)(args.a + args.b);
     });    
     

@@ -5,12 +5,12 @@
 // > ParamTuplePacker
 // > ParamPacker
 // To alternate the two different versions
-using namespace ParamPacker;
-using Funct = std::function<std::any(ParamPack params)>;
+using namespace ParamTuplePacker;
+using Funct = std::function<std::any(ParamPack& params)>;
 
 typedef struct {
     std::unordered_map<std::string,Funct> _map;
-    /* OTHER FIELDS ..... */
+    /* ...... OTHER FIELDS ..... */
 } FunMap;
 
 FunMap map;
@@ -23,7 +23,6 @@ template <typename ...Ts>
 std::any call(std::string name,Ts&&... pack) {
     ParamPack params = packParams(pack...);
     std::any ret =  map._map[name](params);
-    delete[] params.buf; // ToDo switch to smart pointers to avoid explicit delete[]
     return ret;
 }
 
@@ -36,7 +35,7 @@ struct complexType {
 // If using the plain packed struct you need to use the packed-style declaration as in "packed"
 // If you use the tuple-based approach no need to do it
 int main() {
-    reg_fun("tuple",[](ParamPack params) -> bool {
+    reg_fun("tuple",[](ParamPack& params) -> bool {
         std::tuple<complexType*,int> args; 
         if(!unpackParams(params,&args)) return false;
         std::cout << std::get<0>(args)->a << std::endl; 
@@ -45,7 +44,7 @@ int main() {
         return true;
     });
 
-    reg_fun("packed",[](ParamPack params) -> double {
+    reg_fun("packed",[](ParamPack& params) -> double {
         #pragma pack(push, 1)
         struct {complexType* a; int b;} args; 
         #pragma pack(pop)
@@ -61,7 +60,7 @@ int main() {
     complexType t{25,"tuple"};
 
     // Call and parameter passing are transparent to packing method
-    call("packed",&t,55);
+    call("tuple",&t,55);
     return 0;
 }
 

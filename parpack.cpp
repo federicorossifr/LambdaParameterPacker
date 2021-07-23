@@ -17,14 +17,19 @@ std::any call(std::string name,Ts&&... pack) {
     return map._map[name](params);
 }
 
+struct complexType {
+    int a;
+    std::string b;
+};
+
 // Test main
 int main() {
     reg_fun("print_in",[](ParamPack params) -> bool {
         #pragma pack(push, 1)
-        struct {char a; int c;} args; 
+        struct {complexType* t;} args; 
         #pragma pack(pop)
         unpackParams(params,&args);
-        std::cout << args.c << ") In " << args.a << std::endl; return true;
+        std::cout << args.t->a << ") In " << args.t->b << std::endl; return true;
     });
 
     reg_fun("sum",[](ParamPack params) -> double {
@@ -34,9 +39,9 @@ int main() {
         unpackParams(params,&args);
         return (double)(args.a + args.b);
     });    
-
-    double a = std::any_cast<double>(call("sum",2,20));
-    std::cout << a << std::endl;
+    
+    complexType t{25,"hello"};
+    call("print_in",&t);
     return 0;
 }
 

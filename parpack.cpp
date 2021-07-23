@@ -10,6 +10,7 @@ using Funct = std::function<std::any(ParamPack params)>;
 
 typedef struct {
     std::unordered_map<std::string,Funct> _map;
+    /* OTHER FIELDS ..... */
 } FunMap;
 
 FunMap map;

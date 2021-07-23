@@ -1,6 +1,10 @@
 #include "param_pack.h"
 #include "param_tuple_pack.h"
 
+// Change this between
+// > ParamTuplePacker
+// > ParamPacker
+// To alternate the two different versions
 using namespace ParamTuplePacker;
 using Funct = std::function<std::any(ParamPack params)>;
 

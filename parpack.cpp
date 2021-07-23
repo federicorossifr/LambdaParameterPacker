@@ -31,14 +31,16 @@ struct complexType {
 };
 
 // Test main
+// If using the plain packed struct you need to use the packed-style declaration as in "packed"
+// If you use the tuple-based approach no need to do it
 int main() {
-    reg_fun("print_in",[](ParamPack params) -> bool {
+    reg_fun("tuple",[](ParamPack params) -> bool {
         struct {complexType* t;} args; 
         unpackParams(params,&args);
         std::cout << args.t->a << ") In " << args.t->b << std::endl; return true;
     });
 
-    reg_fun("sum",[](ParamPack params) -> double {
+    reg_fun("packed",[](ParamPack params) -> double {
         #pragma pack(push, 1)
         struct {int a; int b;} args; 
         #pragma pack(pop)
@@ -46,7 +48,7 @@ int main() {
         return (double)(args.a + args.b);
     });    
     
-    complexType t{25,"hello"};
+    complexType t{25,"tuple"};
     call("print_in",&t);
     return 0;
 }

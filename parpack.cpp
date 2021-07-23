@@ -22,7 +22,9 @@ void reg_fun(std::string key, Funct f) {
 template <typename ...Ts>
 std::any call(std::string name,Ts&&... pack) {
     ParamPack params = packParams(pack...);
-    return map._map[name](params);
+    std::any ret =  map._map[name](params);
+    delete[] params.buf; // ToDo switch to smart pointers to avoid explicit delete[]
+    return ret;
 }
 
 struct complexType {

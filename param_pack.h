@@ -53,8 +53,7 @@ namespace ParamPacker
         else {
             if(sizeof(TypeStruct) < params.size) return false;
         }
-        ParamBuf buf = params.buf; 
-        std::memcpy(ts,buf,params.size);
+        std::memcpy(ts,params.buf,params.size);
         return true;
     }
 

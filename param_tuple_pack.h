@@ -27,7 +27,7 @@ namespace ParamTuplePacker
     ParamPack packParams(Ts... args) {
         TuplePack<Ts...> pack{args...};
         size_t ts_size = sizeof(pack); 
-        
+
         ParamBuf buf = new unsigned char[ts_size];
         std::memcpy(buf,&pack,ts_size);
         return {buf,ts_size};
@@ -35,7 +35,6 @@ namespace ParamTuplePacker
 
     template <typename TypeStruct,bool Strict = false>
     bool unpackParams(ParamPack& params,TypeStruct* ts) {
-        std::cout << params.size << " " << sizeof(TypeStruct) << std::endl;
 
         if constexpr(Strict)
             if(sizeof(TypeStruct) != params.size) return false;

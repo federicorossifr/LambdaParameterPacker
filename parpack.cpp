@@ -5,7 +5,7 @@
 // > ParamTuplePacker
 // > ParamPacker
 // To alternate the two different versions
-using namespace ParamTuplePacker;
+using namespace ParamPacker;
 using Funct = std::function<std::any(ParamPack params)>;
 
 typedef struct {
@@ -40,23 +40,26 @@ int main() {
         std::cout << std::get<0>(args)->a << std::endl; 
         std::cout << std::get<0>(args)->b << std::endl; 
         std::cout << std::get<1>(args) << std::endl; 
-        
         return true;
     });
 
     reg_fun("packed",[](ParamPack params) -> double {
         #pragma pack(push, 1)
-        struct {int a; int b;} args; 
+        struct {complexType* a; int b;} args; 
         #pragma pack(pop)
-        unpackParams(params,&args);
-        return (double)(args.a + args.b);
+        if(!unpackParams(params,&args)) return false;
+        std::cout << args.a->a << std::endl; 
+        std::cout << args.a->b << std::endl; 
+        std::cout << args.b << std::endl; 
+        return true;
+        
     });    
     
     // Always pass complex types as pointers (bonus: already aligned type)
     complexType t{25,"tuple"};
 
     // Call and parameter passing are transparent to packing method
-    call("tuple",&t,55);
+    call("packed",&t,55);
     return 0;
 }
 

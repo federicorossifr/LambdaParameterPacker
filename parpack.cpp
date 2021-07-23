@@ -35,9 +35,13 @@ struct complexType {
 // If you use the tuple-based approach no need to do it
 int main() {
     reg_fun("tuple",[](ParamPack params) -> bool {
-        struct {complexType* t;} args; 
-        unpackParams(params,&args);
-        std::cout << args.t->a << ") In " << args.t->b << std::endl; return true;
+        std::tuple<complexType*,int> args; 
+        if(!unpackParams(params,&args)) return false;
+        std::cout << std::get<0>(args)->a << std::endl; 
+        std::cout << std::get<0>(args)->b << std::endl; 
+        std::cout << std::get<1>(args) << std::endl; 
+        
+        return true;
     });
 
     reg_fun("packed",[](ParamPack params) -> double {
@@ -48,8 +52,11 @@ int main() {
         return (double)(args.a + args.b);
     });    
     
+    // Always pass complex types as pointers (bonus: already aligned type)
     complexType t{25,"tuple"};
-    call("print_in",&t);
+
+    // Call and parameter passing are transparent to packing method
+    call("tuple",&t,55);
     return 0;
 }
 

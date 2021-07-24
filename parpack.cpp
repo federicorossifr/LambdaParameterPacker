@@ -1,5 +1,9 @@
 #include "param_pack.h"
 #include "param_tuple_pack.h"
+#include <string>
+#include <unordered_map>
+#include <functional>
+#include <iostream>
 
 // Change this between
 // > ParamTuplePacker
@@ -22,8 +26,7 @@ void reg_fun(std::string key, Funct f) {
 template <typename ...Ts>
 std::any call(std::string name,Ts&&... pack) {
     ParamPack params = packParams(pack...);
-    std::any ret =  map._map[name](params);
-    return ret;
+    return map._map[name](params);
 }
 
 struct complexType {
